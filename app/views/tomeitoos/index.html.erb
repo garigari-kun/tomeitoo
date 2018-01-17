@@ -1,5 +1,7 @@
 <div class="jumbotron">
-  <h1 class="text-center">25:00</h1>
+  <div id="pomodoro-work-timer" class="pomodoro-timer-container">
+
+  </div>
   <div class="text-center">
     <%= link_to "Start",
                 pomodoros_path,
@@ -27,3 +29,16 @@
               class: "btn btn-danger",
               id: "end-pomodoro-timer" %>
 </div>
+
+
+<script>
+$('#pomodoro-work-timer').timer({
+    countdown: true,
+    // duration: '25m00s',
+    duration: '10s',
+
+    callback: function() {
+    	alert("Done");
+    }
+});
+</script>
