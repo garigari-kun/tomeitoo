@@ -1,16 +1,16 @@
 <div class="jumbotron">
   <div id="pomodoro-work-timer" class="pomodoro-timer-container">
-
+    25:00 min
   </div>
   <div class="text-center">
     <%= link_to "Start",
                 pomodoros_path,
                 class: "btn btn-primary",
                 :method => :post,
-                remote: true %>
-    <%= link_to "Pause",
-                "",
-                class: "btn btn-warning" %>
+                remote: true,
+                id: "start-pomodoro-timer" %>
+    <button class="btn btn-warning", id="pause-pomodoro-timer">Pause</button>
+    <button class="btn btn-warning is-hidden" id="resume-pomodoro-timer">Resume</button>
     <%= link_to "Reset",
                 "",
                 :method => :delete,
@@ -32,13 +32,63 @@
 
 
 <script>
-$('#pomodoro-work-timer').timer({
-    countdown: true,
-    // duration: '25m00s',
-    duration: '10s',
 
-    callback: function() {
-    	alert("Done");
-    }
+var is_started = false;
+var is_paused = false;
+
+$("#start-pomodoro-timer").on("click", function() {
+  is_started = true;
+  start_pomodoro_timer();
 });
+
+$("#pause-pomodoro-timer").on("click", function() {
+  pausePomodoroTimer();
+})
+
+$("#resume-pomodoro-timer").on("click", function() {
+  resumePomodoroTimer();
+})
+
+$("#destroy-pomodoro-timer").on("click", function() {
+  destroyPomodoroTimer();
+})
+
+function start_pomodoro_timer() {
+  $('#pomodoro-work-timer').timer({
+      countdown: true,
+      duration: '25m00s',
+      callback: function() {
+      	alert("Done");
+      }
+  });
+  $("#start-pomodoro-timer").addClass("is-hidden");
+}
+
+function pausePomodoroTimer() {
+  is_paused = true;
+  $("#pomodoro-work-timer").timer("pause");
+  if (is_paused) {
+    $("#pause-pomodoro-timer").addClass("is-hidden");
+    $("#resume-pomodoro-timer").removeClass("is-hidden");
+  }
+}
+
+function resumePomodoroTimer() {
+  is_paused = false;
+  $("#pomodoro-work-timer").timer("resume");
+  $("#pause-pomodoro-timer").removeClass("is-hidden");
+  $("#resume-pomodoro-timer").addClass("is-hidden");
+}
+
+function destroyPomodoroTimer() {
+  $('#pomodoro-work-timer').timer('remove');
+  var is_started = false;
+  var is_paused = false;
+  $("#pause-pomodoro-timer").removeClass("is-hidden");
+  $("#start-pomodoro-timer").removeClass("is-hidden");
+  $("#resume-pomodoro-timer").addClass("is-hidden");
+
+
+}
+
 </script>
