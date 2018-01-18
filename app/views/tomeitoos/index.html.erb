@@ -1,6 +1,20 @@
 <div class="jumbotron">
+
+  <div class="btn-group btn-group-justified pomodoro-timer-bar" role="group">
+    <div class="btn-group" role="group">
+      <button type="button" class="btn btn-default">Pomodoro</button>
+    </div>
+    <div class="btn-group" role="group">
+      <button type="button" class="btn btn-default">Short break</button>
+    </div>
+    <div class="btn-group" role="group">
+      <button type="button" class="btn btn-default">Long break</button>
+    </div>
+  </div>
+
+
   <div id="pomodoro-work-timer" class="pomodoro-timer-container">
-    25:00 min
+    <%= min_for_displaying @pomodoro_default_settings[:pomodoro_time] %>
   </div>
 
   <div class="text-center">
@@ -29,8 +43,6 @@
               id: "finish-pomodoro-timer" %>
 </div>
 
-<%= link_to "Trigger test", "", id: "trigger-test", data: { confirm: "test" } %>
-
 
 
 <script>
@@ -58,8 +70,8 @@ $("#destroy-pomodoro-timer").on("click", function() {
 function start_pomodoro_timer() {
   $('#pomodoro-work-timer').timer({
       countdown: true,
-      // duration: '25m00s',
-      duration: "10s",
+      // duration: "10s",
+      duration: "<%= min_for_timer @pomodoro_default_settings[:pomodoro_time] %>",
       callback: function() {
         updatePomodoroTimer();
       }
@@ -85,16 +97,21 @@ function resumePomodoroTimer() {
 
 function destroyPomodoroTimer() {
   $('#pomodoro-work-timer').timer('remove');
-  var is_started = false;
-  var is_paused = false;
+  is_started = false;
+  is_paused = false;
   $("#pause-pomodoro-timer").removeClass("is-hidden");
   $("#start-pomodoro-timer").removeClass("is-hidden");
   $("#resume-pomodoro-timer").addClass("is-hidden");
+  location.reload();
 }
 
 function updatePomodoroTimer() {
   $("#finish-pomodoro-timer")[0].click();
   location.reload();
+}
+
+function updateTimerStatus() {
+  // wip
 }
 
 
