@@ -2,10 +2,11 @@
   <div id="pomodoro-work-timer" class="pomodoro-timer-container">
     25:00 min
   </div>
+
   <div class="text-center">
     <%= link_to "Start",
                 pomodoros_path,
-                class: "btn btn-primary",
+                class: "btn btn-success",
                 :method => :post,
                 remote: true,
                 id: "start-pomodoro-timer" %>
@@ -19,16 +20,17 @@
                 id: "destroy-pomodoro-timer" %>
   </div>
 </div>
-
-<div class="container">
-  <h1>For testing purpose</h1>
-  <%= link_to "End",
+<div class="hidden-container">
+  <%= link_to "",
               "",
               :method => :patch,
               remote: true,
-              class: "btn btn-danger",
-              id: "end-pomodoro-timer" %>
+              class: "btn btn-danger is-hidden",
+              id: "finish-pomodoro-timer" %>
 </div>
+
+<%= link_to "Trigger test", "", id: "trigger-test", data: { confirm: "test" } %>
+
 
 
 <script>
@@ -56,9 +58,10 @@ $("#destroy-pomodoro-timer").on("click", function() {
 function start_pomodoro_timer() {
   $('#pomodoro-work-timer').timer({
       countdown: true,
-      duration: '25m00s',
+      // duration: '25m00s',
+      duration: "10s",
       callback: function() {
-      	alert("Done");
+        updatePomodoroTimer();
       }
   });
   $("#start-pomodoro-timer").addClass("is-hidden");
@@ -87,8 +90,13 @@ function destroyPomodoroTimer() {
   $("#pause-pomodoro-timer").removeClass("is-hidden");
   $("#start-pomodoro-timer").removeClass("is-hidden");
   $("#resume-pomodoro-timer").addClass("is-hidden");
-
-
 }
+
+function updatePomodoroTimer() {
+  $("#finish-pomodoro-timer")[0].click();
+  location.reload();
+}
+
+
 
 </script>
