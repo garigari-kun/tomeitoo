@@ -1,6 +1,6 @@
-
+#
 # class PomodoroDefaultSetting
-#   attr_reader :pomodoro_timer, :short_break, :long_break
+#   attr_accessor :pomodoro_timer, :short_break, :long_break
 #
 #   def initialize(pomodoro_time=25, short_break=5, long_break=15)
 #     @pomodoro_time = pomodoro_time

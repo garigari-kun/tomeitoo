@@ -2,17 +2,18 @@
 
   <div class="btn-group btn-group-justified pomodoro-timer-bar" role="group">
     <div class="btn-group" role="group">
-      <button type="button" class="btn btn-default">Pomodoro</button>
+      <button type="button" class="btn btn-default active" id="pomodoro-link">Pomodoro</button>
     </div>
     <div class="btn-group" role="group">
-      <button type="button" class="btn btn-default">Short break</button>
+      <button type="button" class="btn btn-default" id="short-break-link">Short break</button>
     </div>
     <div class="btn-group" role="group">
-      <button type="button" class="btn btn-default">Long break</button>
+      <button type="button" class="btn btn-default" id="long-break-link">Long break</button>
     </div>
   </div>
 
 
+<div id="pomodoro-container">
   <div id="pomodoro-work-timer" class="pomodoro-timer-container">
     <%= min_for_displaying @pomodoro_default_settings[:pomodoro_time] %>
   </div>
@@ -24,24 +25,28 @@
                 :method => :post,
                 remote: true,
                 id: "start-pomodoro-timer" %>
-    <button class="btn btn-warning", id="pause-pomodoro-timer">Pause</button>
+    <button class="btn btn-warning", id="pause-pomodoro-timer" disabled="disabled">Pause</button>
     <button class="btn btn-warning is-hidden" id="resume-pomodoro-timer">Resume</button>
     <%= link_to "Reset",
                 "",
                 :method => :delete,
                 remote: true,
                 class: "btn btn-danger",
-                id: "destroy-pomodoro-timer" %>
+                id: "destroy-pomodoro-timer",
+                disabled: "disabled" %>
+  </div>
+  <div class="hidden-container">
+    <%= link_to "",
+                "",
+                :method => :patch,
+                remote: true,
+                class: "btn btn-danger is-hidden",
+                id: "finish-pomodoro-timer" %>
   </div>
 </div>
-<div class="hidden-container">
-  <%= link_to "",
-              "",
-              :method => :patch,
-              remote: true,
-              class: "btn btn-danger is-hidden",
-              id: "finish-pomodoro-timer" %>
+
 </div>
+
 
 
 
@@ -57,15 +62,44 @@ $("#start-pomodoro-timer").on("click", function() {
 
 $("#pause-pomodoro-timer").on("click", function() {
   pausePomodoroTimer();
-})
+});
 
 $("#resume-pomodoro-timer").on("click", function() {
   resumePomodoroTimer();
-})
+});
 
 $("#destroy-pomodoro-timer").on("click", function() {
   destroyPomodoroTimer();
-})
+});
+
+$("#short-break-link").on("click", function() {
+  $("#pomodoro-container").addClass("is-hidden");
+  $("#long-break-container").addClass("is-hidden");
+  $("#pomodoro-link").removeClass("active");
+  $("#long-break-link").removeClass("active");
+  $("#short-break-link").addClass("active");
+
+});
+
+$("#long-break-link").on("click", function() {
+  alert('long break link clicked');
+  $("#pomodoro-container").addClass("is-hidden");
+  $("#short-break-container").addClass("is-hidden");
+  $("#pomodoro-link").removeClass("active");
+  $("#long-break-link").addClass("active");
+  $("#short-break-link").removeClass("active");
+});
+
+$("#pomodoro-link").on("click", function() {
+  alert('pomodoro link clicked');
+  $("#long-break-container").addClass("is-hidden");
+  $("#short-break-container").addClass("is-hidden");
+  $("#pomodoro-link").addClass("active");
+  $("#long-break-link").removeClass("active");
+  $("#short-break-link").removeClass("active");
+});
+
+
 
 function start_pomodoro_timer() {
   $('#pomodoro-work-timer').timer({
@@ -77,6 +111,8 @@ function start_pomodoro_timer() {
       }
   });
   $("#start-pomodoro-timer").addClass("is-hidden");
+  $("#pause-pomodoro-timer").attr("disabled", false);
+  $("#destroy-pomodoro-timer").attr("disabled", false);
 }
 
 function pausePomodoroTimer() {
