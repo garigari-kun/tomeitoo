@@ -45,6 +45,40 @@
   </div>
 </div><!-- pomodoro-container end -->
 
+<div id="short-break-container" class="is-hidden">
+  <div id="short-break-timer" class="pomodoro-timer-container">
+    <%= min_for_displaying @pomodoro_default_settings[:short_break] %>
+  </div>
+  <div class="text-center">
+    <button class="btn btn-success start-pomodoro-break-timer"
+            data-min="<%= min_for_timer @pomodoro_default_settings[:short_break] %>"
+            data-type="short"
+            id="start-pomodoro-short-break-timer">
+            Start
+    </button>
+    <button class="btn btn-warning pause-pomodoro-break-timer" id="pause-pomodoro-short-break-timer" data-type="short" disabled="disabled">Pause</button>
+    <button class="btn btn-warning is-hidden resume-pomodoro-break-timer" id="resume-pomodoro-short-break-timer" data-type="short">Resume</button>
+    <button class="btn btn-danger destroy-pomodoro-break-timer" id="destroy-pomodoro-short-break-timer" data-type="short" disabled="disabled">Reset</button>
+  </div>
+</div><!-- short-break-container end -->
+
+
+<div id="long-break-container" class="is-hidden">
+  <div id="long-break-timer" class="pomodoro-timer-container">
+    <%= min_for_displaying @pomodoro_default_settings[:long_break] %>
+  </div>
+  <div class="text-center">
+    <button class="btn btn-success start-pomodoro-break-timer"
+            data-min="<%= min_for_timer @pomodoro_default_settings[:long_break] %>"
+            data-type="long"
+            id="start-pomodoro-long-break-timer">
+            Start
+    </button>
+    <button class="btn btn-warning pause-pomodoro-break-timer" id="pause-pomodoro-long-break-timer" data-type="long" disabled="disabled">Pause</button>
+    <button class="btn btn-warning is-hidden resume-pomodoro-break-timer" id="resume-pomodoro-long-break-timer" data-type="long">Resume</button>
+    <button class="btn btn-danger destroy-pomodoro-break-timer" data-type="long" id="destroy-pomodoro-long-break-timer" disabled="disabled">Reset</button>
+  </div>
+</div><!-- long-break-container end -->
 
 
 </div><!-- jumbotron end -->
@@ -56,6 +90,9 @@
 
 var is_started = false;
 var is_paused = false;
+
+var break_started = false;
+var break_paused = false;
 
 // pomodoro timer actions
 $("#start-pomodoro-timer").on("click", function() {
@@ -119,6 +156,38 @@ function updatePomodoroTimer() {
   $("#finish-pomodoro-timer")[0].click();
   location.reload();
 }
+
+
+
+
+// pomodoro break timer actions
+$(".start-pomodoro-break-timer").on("click", function() {
+  break_started = true;
+  var min = $(this).attr("data-min");
+  var type = $(this).attr("data-type");
+  start_pomodoro_break_timer(min, type);
+});
+
+function start_pomodoro_break_timer(min, type) {
+  var break_timer_id = "#".concat(type, "-break-timer");
+  $(break_timer_id).timer({
+      countdown: true,
+      duration: min,
+      callback: function() {
+        // updatePomodoroTimer();
+      }
+  });
+  $("#start-pomodoro-".concat(type, "-break-timer")).addClass("is-hidden");
+  $("#pause-pomodoro-".concat(type, "-break-timer")).attr("disabled", false);
+  $("#destroy-pomodoro-".concat(type, "-break-timer")).attr("disabled", false);
+}
+
+
+
+
+
+
+
 
 // pomodoro-link pomodoro-timer-bar
 $("#pomodoro-link").on("click", function() {
