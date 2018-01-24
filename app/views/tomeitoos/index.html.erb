@@ -97,7 +97,8 @@ $("#destroy-pomodoro-timer").on("click", function() {
 function startPomodoroTimer() {
   $('#pomodoro-work-timer').timer({
       countdown: true,
-      duration: "<%= min_for_timer @pomodoro_default_settings[:pomodoro_time] %>",
+      // duration: "<%= min_for_timer @pomodoro_default_settings[:pomodoro_time] %>",
+      duration: "10s",
       callback: function() {
         updatePomodoroTimer();
       }
