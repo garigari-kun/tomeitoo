@@ -8,6 +8,8 @@
 /.bundle
 
 /vendor/bundle
+/initializers/devise.rb
+
 
 # Ignore the default SQLite database.
 /db/*.sqlite3

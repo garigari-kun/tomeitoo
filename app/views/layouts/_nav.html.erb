@@ -12,9 +12,11 @@
     </div>
     <div class="collapse navbar-collapse navbar-menubuilder">
       <ul class="nav navbar-nav navbar-right">
-        <li>
-          <%= link_to "Sign Up", root_path %>
-        </li>
+        <% if !current_user %>
+          <li>
+            <%= link_to "サインイン", user_facebook_omniauth_authorize_path %>
+          </li>
+        <% end %>
         <li>
           <%= link_to "Q&A", root_path %>
         </li>
