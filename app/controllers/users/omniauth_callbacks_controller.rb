@@ -1,6 +1,8 @@
 # app/controller/users/omniauth_callbacks_controller.rb
 
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
+# class OmniauthCallbacksController < Devise::OmniauthCallbacksController
+
   def facebook
     @user = User.from_omniauth(request.env["omniauth.auth"])
 
@@ -11,6 +13,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
       session["devise.facebook_data"] = request.env["omniauth.auth"]
       redirect_to new_user_registration_url
     end
+    # raise puts "Hey"
   end
 
   def failure

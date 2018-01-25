@@ -16,6 +16,10 @@
           <li>
             <%= link_to "サインイン", user_facebook_omniauth_authorize_path %>
           </li>
+        <% else %>
+          <li>
+            <%= link_to "ログアウト", root_path %>
+          </li>
         <% end %>
         <li>
           <%= link_to "Q&A", root_path %>

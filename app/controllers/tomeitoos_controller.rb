@@ -15,11 +15,11 @@ class TomeitoosController < ApplicationController
   helper :pomodoros
 
   def index
-    @pomodoro_default_settings = {
-      :pomodoro_time => 25,
-      :short_break => 5,
-      :long_break => 15
-    }
+      @pomodoro_default_settings = {
+        :pomodoro_time => 25,
+        :short_break => 5,
+        :long_break => 15
+      }
   end
 
 end
