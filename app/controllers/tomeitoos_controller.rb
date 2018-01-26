@@ -15,6 +15,8 @@ class TomeitoosController < ApplicationController
   helper :pomodoros
 
   def index
+    # @pomodoro = Pomodoro.new
+    @pomodoro = current_user.pomodoros.build()
     if user_signed_in?
       @pomodoro_default_settings = {
         :pomodoro_time => 25,
