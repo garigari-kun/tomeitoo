@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180125112216) do
+ActiveRecord::Schema.define(version: 20180127014933) do
+
+  create_table "pomodoro_settings", force: :cascade do |t|
+    t.integer "pomodoro_time"
+    t.integer "shortbreak_time"
+    t.integer "longbreak_time"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+  end
 
   create_table "pomodoros", force: :cascade do |t|
     t.datetime "start_at"

@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  pomodoro_time: 1
+  shortbreak_time: 1
+  longbreak_time: 1
+
+two:
+  pomodoro_time: 1
+  shortbreak_time: 1
+  longbreak_time: 1
