@@ -7,9 +7,9 @@
     </div>
     <div class="text-center">
       <button class="btn btn-success" id="start-pomodoro-timer">Start</button>
-      <button class="btn btn-warning", id="pause-pomodoro-timer" disabled="disabled">Pause</button>
+      <button class="btn btn-warning is-hidden", id="pause-pomodoro-timer">Pause</button>
       <button class="btn btn-warning is-hidden" id="resume-pomodoro-timer">Resume</button>
-      <button class="btn btn-danger" id="destroy-pomodoro-timer" disabled="disabled">Reset</button>
+      <button class="btn btn-danger is-hidden" id="destroy-pomodoro-timer">Reset</button>
     </div>
     <div class="hidden-container">
       <%= form_for @pomodoro, :remote => true do |f| %>
@@ -30,9 +30,9 @@
               id="start-pomodoro-short-break-timer">
               Start
       </button>
-      <button class="btn btn-warning" id="pause-pomodoro-short-break-timer" disabled="disabled">Pause</button>
+      <button class="btn btn-warning is-hidden" id="pause-pomodoro-short-break-timer">Pause</button>
       <button class="btn btn-warning is-hidden" id="resume-pomodoro-short-break-timer">Resume</button>
-      <button class="btn btn-danger" id="destroy-pomodoro-short-break-timer" disabled="disabled">Reset</button>
+      <button class="btn btn-danger is-hidden" id="destroy-pomodoro-short-break-timer">Reset</button>
     </div>
   </div><!-- short-break-container end -->
 
@@ -47,9 +47,9 @@
               id="start-pomodoro-long-break-timer">
               Start
       </button>
-      <button class="btn btn-warning" id="pause-pomodoro-long-break-timer" disabled="disabled">Pause</button>
+      <button class="btn btn-warning is-hidden" id="pause-pomodoro-long-break-timer">Pause</button>
       <button class="btn btn-warning is-hidden" id="resume-pomodoro-long-break-timer">Resume</button>
-      <button class="btn btn-danger" id="destroy-pomodoro-long-break-timer" disabled="disabled">Reset</button>
+      <button class="btn btn-danger is-hidden" id="destroy-pomodoro-long-break-timer">Reset</button>
     </div>
   </div><!-- long-break-container end -->
 
@@ -59,13 +59,8 @@
 
 
 <script>
-
-var is_started = false;
-var is_paused = false;
-
 // pomodoro timer actions
 $("#start-pomodoro-timer").on("click", function() {
-  is_started = true;
   var current_time_in_ms = new Date().getTime();
   $("#pomodoro_start_at").val(current_time_in_ms);
   startPomodoroTimer();
@@ -86,29 +81,26 @@ $("#destroy-pomodoro-timer").on("click", function() {
 function startPomodoroTimer() {
   $('#pomodoro-work-timer').timer({
       countdown: true,
-      // duration: "<%= min_for_timer @pomodoro_default_settings[:pomodoro_time] %>",
-      duration: "3s",
+      duration: "<%= min_for_timer @pomodoro_default_settings[:pomodoro_time] %>",
+      // duration: "3s",
       callback: function() {
         createPomodoroTimer();
         ring_finishing_alerm();
+
       }
   });
   $("#start-pomodoro-timer").addClass("is-hidden");
-  $("#pause-pomodoro-timer").attr("disabled", false);
-  $("#destroy-pomodoro-timer").attr("disabled", false);
+  $("#pause-pomodoro-timer").removeClass("is-hidden");
+  $("#destroy-pomodoro-timer").removeClass("is-hidden");
 }
 
 function pausePomodoroTimer() {
-  is_paused = true;
   $("#pomodoro-work-timer").timer("pause");
-  if (is_paused) {
-    $("#pause-pomodoro-timer").addClass("is-hidden");
-    $("#resume-pomodoro-timer").removeClass("is-hidden");
-  }
+  $("#pause-pomodoro-timer").addClass("is-hidden");
+  $("#resume-pomodoro-timer").removeClass("is-hidden");
 }
 
 function resumePomodoroTimer() {
-  is_paused = false;
   $("#pomodoro-work-timer").timer("resume");
   $("#pause-pomodoro-timer").removeClass("is-hidden");
   $("#resume-pomodoro-timer").addClass("is-hidden");
@@ -120,7 +112,6 @@ function destroyPomodoroTimer() {
 
 function createPomodoroTimer() {
   $("#submit-pomodoro")[0].click();
-
 }
 
 
@@ -134,8 +125,8 @@ $("#start-pomodoro-short-break-timer").on("click", function() {
       }
   });
   $("#start-pomodoro-short-break-timer").addClass("is-hidden");
-  $("#pause-pomodoro-short-break-timer").attr("disabled", false);
-  $("#destroy-pomodoro-short-break-timer").attr("disabled", false);
+  $("#pause-pomodoro-short-break-timer").removeClass("is-hidden");
+  $("#destroy-pomodoro-short-break-timer").removeClass("is-hidden");
 });
 
 $("#pause-pomodoro-short-break-timer").on("click", function() {
@@ -157,13 +148,11 @@ $("#destroy-pomodoro-short-break-timer").on("click", function() {
 function destroyPomodoroShortbreakTimer() {
   $("#short-break-timer").timer("remove");
   $("#start-pomodoro-short-break-timer").removeClass("is-hidden");
-  $("#pause-pomodoro-short-break-timer").removeClass("is-hidden");
-  $("#pause-pomodoro-short-break-timer").attr("disabled", true);
+  $("#pause-pomodoro-short-break-timer").addClass("is-hidden");
   $("#resume-pomodoro-short-break-timer").addClass("is-hidden");
-  $("#destroy-pomodoro-short-break-timer").attr("disabled", true);
+  $("#destroy-pomodoro-short-break-timer").addClass("is-hidden");
   $("#short-break-timer").text("<%= min_for_displaying @pomodoro_default_settings[:short_break] %>");
 }
-
 
 // long break
 $("#start-pomodoro-long-break-timer").on("click", function() {
@@ -175,8 +164,8 @@ $("#start-pomodoro-long-break-timer").on("click", function() {
       }
   });
   $("#start-pomodoro-long-break-timer").addClass("is-hidden");
-  $("#pause-pomodoro-long-break-timer").attr("disabled", false);
-  $("#destroy-pomodoro-long-break-timer").attr("disabled", false);
+  $("#pause-pomodoro-long-break-timer").removeClass("is-hidden");
+  $("#destroy-pomodoro-long-break-timer").removeClass("is-hidden");
 });
 
 $("#pause-pomodoro-long-break-timer").on("click", function() {
@@ -198,10 +187,9 @@ $("#destroy-pomodoro-long-break-timer").on("click", function() {
 function destroyPomodoroLongbreakTimer() {
   $("#long-break-timer").timer("remove");
   $("#start-pomodoro-long-break-timer").removeClass("is-hidden");
-  $("#pause-pomodoro-long-break-timer").removeClass("is-hidden");
-  $("#pause-pomodoro-long-break-timer").attr("disabled", true);
+  $("#pause-pomodoro-long-break-timer").addClass("is-hidden");
   $("#resume-pomodoro-long-break-timer").addClass("is-hidden");
-  $("#destroy-pomodoro-long-break-timer").attr("disabled", true);
+  $("#destroy-pomodoro-long-break-timer").addClass("is-hidden");
   $("#long-break-timer").text("<%= min_for_displaying @pomodoro_default_settings[:long_break] %>");
 }
 
