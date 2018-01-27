@@ -1,0 +1,21 @@
+<div class="container">
+  <h1>タイマー設定</h1>
+  <hr />
+
+  <%= simple_form_for @pomodoro_setting, url: create_pomodoro_settings_path do |f| %>
+    <%= f.input :pomodoro_time,
+                label: "Pomodoro",
+                collection: @timer_options,
+                selected: @pomodoro_default_settings[:pomodoro_time] %>
+    <%= f.input :shortbreak_time,
+                label: "Short break",
+                collection: @timer_options,
+                selected: @pomodoro_default_settings[:short_break] %>
+    <%= f.input :longbreak_time,
+                label: "Long break",
+                collection: @timer_options,
+                selected: @pomodoro_default_settings[:long_break] %>
+    <%= f.button :submit, "保存" %>
+  <% end %>
+
+</div>
