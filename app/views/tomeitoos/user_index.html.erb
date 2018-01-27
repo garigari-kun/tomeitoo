@@ -55,6 +55,8 @@
 
 </div><!-- jumbotron end -->
 
+<%= audio_tag "you-have-new-message.mp3", id: "finish-alerm" %>
+
 
 <script>
 
@@ -88,6 +90,7 @@ function startPomodoroTimer() {
       duration: "3s",
       callback: function() {
         createPomodoroTimer();
+        ring_finishing_alerm();
       }
   });
   $("#start-pomodoro-timer").addClass("is-hidden");
@@ -231,6 +234,11 @@ $("#long-break-link").on("click", function() {
   // reset pomodoro timer and also break timer
   destroyPomodoroShortbreakTimer();
 });
+
+
+function ring_finishing_alerm() {
+  $("#finish-alerm").trigger("play");
+}
 
 
 </script>
