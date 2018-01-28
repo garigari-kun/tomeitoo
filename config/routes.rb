@@ -3,6 +3,7 @@ Rails.application.routes.draw do
   root "tomeitoos#index"
   resources :pomodoros
   # resources :pomodoro_settings
+  resources :archives
 
   # pomodoro_settings routing
   get '/pomodoro_settings', to: 'pomodoro_settings#index', as: 'pomodoro_settings'
