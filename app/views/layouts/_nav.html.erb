@@ -27,7 +27,7 @@
             <%= link_to "設定", pomodoro_settings_path %>
           </li>
           <li>
-            <%= link_to "ログアウト", root_path %>
+            <%= link_to "ログアウト", destroy_user_session_path, :method => "delete" %>
           </li>
         <% end %>
         <!-- <li>

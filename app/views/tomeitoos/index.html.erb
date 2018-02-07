@@ -1,35 +1,15 @@
 <div class="jumbotron">
 
   <%= render "timer_nav" %>
-
   <div id="pomodoro-container">
     <div id="pomodoro-work-timer" class="pomodoro-timer-container">
       <%= min_for_displaying @pomodoro_default_settings[:pomodoro_time] %>
     </div>
     <div class="text-center">
-      <%= link_to "Start",
-                  pomodoros_path,
-                  class: "btn btn-success",
-                  :method => :post,
-                  remote: true,
-                  id: "start-pomodoro-timer" %>
-      <button class="btn btn-warning", id="pause-pomodoro-timer" disabled="disabled">Pause</button>
+      <button class="btn btn-success" id="start-pomodoro-timer">Start</button>
+      <button class="btn btn-warning is-hidden", id="pause-pomodoro-timer">Pause</button>
       <button class="btn btn-warning is-hidden" id="resume-pomodoro-timer">Resume</button>
-      <%= link_to "Reset",
-                  "",
-                  :method => :delete,
-                  remote: true,
-                  class: "btn btn-danger",
-                  id: "destroy-pomodoro-timer",
-                  disabled: "disabled" %>
-    </div>
-    <div class="hidden-container">
-      <%= link_to "",
-                  "",
-                  :method => :patch,
-                  remote: true,
-                  class: "btn btn-danger is-hidden",
-                  id: "finish-pomodoro-timer" %>
+      <button class="btn btn-danger is-hidden" id="destroy-pomodoro-timer">Reset</button>
     </div>
   </div><!-- pomodoro-container end -->
 
@@ -44,9 +24,9 @@
               id="start-pomodoro-short-break-timer">
               Start
       </button>
-      <button class="btn btn-warning" id="pause-pomodoro-short-break-timer" disabled="disabled">Pause</button>
+      <button class="btn btn-warning is-hidden" id="pause-pomodoro-short-break-timer">Pause</button>
       <button class="btn btn-warning is-hidden" id="resume-pomodoro-short-break-timer">Resume</button>
-      <button class="btn btn-danger" id="destroy-pomodoro-short-break-timer" disabled="disabled">Reset</button>
+      <button class="btn btn-danger is-hidden" id="destroy-pomodoro-short-break-timer">Reset</button>
     </div>
   </div><!-- short-break-container end -->
 
@@ -61,79 +41,45 @@
               id="start-pomodoro-long-break-timer">
               Start
       </button>
-      <button class="btn btn-warning" id="pause-pomodoro-long-break-timer" disabled="disabled">Pause</button>
+      <button class="btn btn-warning is-hidden" id="pause-pomodoro-long-break-timer">Pause</button>
       <button class="btn btn-warning is-hidden" id="resume-pomodoro-long-break-timer">Resume</button>
-      <button class="btn btn-danger" id="destroy-pomodoro-long-break-timer" disabled="disabled">Reset</button>
+      <button class="btn btn-danger is-hidden" id="destroy-pomodoro-long-break-timer">Reset</button>
     </div>
   </div><!-- long-break-container end -->
 
-
-
 </div><!-- jumbotron end -->
+
+<%= audio_tag "you-have-new-message.mp3", id: "finish-alerm", onended: "afterSound()" %>
 
 
 <script>
-
-var is_started = false;
-var is_paused = false;
-
 // pomodoro timer actions
 $("#start-pomodoro-timer").on("click", function() {
-  is_started = true;
-  startPomodoroTimer();
+  var current_time_in_ms = new Date().getTime();
+  $("#pomodoro_start_at").val(current_time_in_ms);
+  $('#pomodoro-work-timer').timer({
+      countdown: true,
+      duration: "<%= min_for_timer @pomodoro_default_settings[:pomodoro_time] %>",
+      callback: function() {
+        ringSound();
+      }
+  });
+  changeButtonsStateAfterStarted("pomodoro");
 });
 
 $("#pause-pomodoro-timer").on("click", function() {
-  pausePomodoroTimer();
+  $("#pomodoro-work-timer").timer("pause");
+  changeButtonsStateAfterPaused("pomodoro");
 });
 
 $("#resume-pomodoro-timer").on("click", function() {
-  resumePomodoroTimer();
+  $("#pomodoro-work-timer").timer("resume");
+  changeButtonsStateAfterResume("pomodoro");
 });
 
 $("#destroy-pomodoro-timer").on("click", function() {
-  destroyPomodoroTimer();
+  location.reload();
 });
-
-function startPomodoroTimer() {
-  $('#pomodoro-work-timer').timer({
-      countdown: true,
-      // duration: "<%= min_for_timer @pomodoro_default_settings[:pomodoro_time] %>",
-      duration: "10s",
-      callback: function() {
-        updatePomodoroTimer();
-      }
-  });
-  $("#start-pomodoro-timer").addClass("is-hidden");
-  $("#pause-pomodoro-timer").attr("disabled", false);
-  $("#destroy-pomodoro-timer").attr("disabled", false);
-}
-
-function pausePomodoroTimer() {
-  is_paused = true;
-  $("#pomodoro-work-timer").timer("pause");
-  if (is_paused) {
-    $("#pause-pomodoro-timer").addClass("is-hidden");
-    $("#resume-pomodoro-timer").removeClass("is-hidden");
-  }
-}
-
-function resumePomodoroTimer() {
-  is_paused = false;
-  $("#pomodoro-work-timer").timer("resume");
-  $("#pause-pomodoro-timer").removeClass("is-hidden");
-  $("#resume-pomodoro-timer").addClass("is-hidden");
-}
-
-function destroyPomodoroTimer() {
-  location.reload();
-}
-
-function updatePomodoroTimer() {
-  $("#finish-pomodoro-timer")[0].click();
-  location.reload();
-}
-
 
 // short break
 $("#start-pomodoro-short-break-timer").on("click", function() {
@@ -141,24 +87,20 @@ $("#start-pomodoro-short-break-timer").on("click", function() {
       countdown: true,
       duration: "<%= min_for_timer @pomodoro_default_settings[:short_break] %>",
       callback: function() {
-
+        ringSound();
       }
   });
-  $("#start-pomodoro-short-break-timer").addClass("is-hidden");
-  $("#pause-pomodoro-short-break-timer").attr("disabled", false);
-  $("#destroy-pomodoro-short-break-timer").attr("disabled", false);
+  changeButtonsStateAfterStarted("pomodoro-short-break")
 });
 
 $("#pause-pomodoro-short-break-timer").on("click", function() {
   $("#short-break-timer").timer("pause");
-  $("#pause-pomodoro-short-break-timer").addClass("is-hidden");
-  $("#resume-pomodoro-short-break-timer").removeClass("is-hidden");
+  changeButtonsStateAfterPaused("pomodoro-short-break");
 });
 
 $("#resume-pomodoro-short-break-timer").on("click", function() {
   $("#short-break-timer").timer("resume");
-  $("#pause-pomodoro-short-break-timer").removeClass("is-hidden");
-  $("#resume-pomodoro-short-break-timer").addClass("is-hidden");
+  changeButtonsStateAfterResume("pomodoro-short-break");
 });
 
 $("#destroy-pomodoro-short-break-timer").on("click", function() {
@@ -167,39 +109,31 @@ $("#destroy-pomodoro-short-break-timer").on("click", function() {
 
 function destroyPomodoroShortbreakTimer() {
   $("#short-break-timer").timer("remove");
-  $("#start-pomodoro-short-break-timer").removeClass("is-hidden");
-  $("#pause-pomodoro-short-break-timer").removeClass("is-hidden");
-  $("#pause-pomodoro-short-break-timer").attr("disabled", true);
-  $("#resume-pomodoro-short-break-timer").addClass("is-hidden");
-  $("#destroy-pomodoro-short-break-timer").attr("disabled", true);
+  changeButtonsStateAfterDestroy("pomodoro-short-break");
   $("#short-break-timer").text("<%= min_for_displaying @pomodoro_default_settings[:short_break] %>");
 }
-
 
 // long break
 $("#start-pomodoro-long-break-timer").on("click", function() {
   $('#long-break-timer').timer({
       countdown: true,
       duration: "<%= min_for_timer @pomodoro_default_settings[:long_break] %>",
+      // duration: "3s",
       callback: function() {
-
+        ringSound();
       }
   });
-  $("#start-pomodoro-long-break-timer").addClass("is-hidden");
-  $("#pause-pomodoro-long-break-timer").attr("disabled", false);
-  $("#destroy-pomodoro-long-break-timer").attr("disabled", false);
+  changeButtonsStateAfterStarted("pomodoro-long-break");
 });
 
 $("#pause-pomodoro-long-break-timer").on("click", function() {
   $("#long-break-timer").timer("pause");
-  $("#pause-pomodoro-long-break-timer").addClass("is-hidden");
-  $("#resume-pomodoro-long-break-timer").removeClass("is-hidden");
+  changeButtonsStateAfterPaused("pomodoro-long-break");
 });
 
 $("#resume-pomodoro-long-break-timer").on("click", function() {
   $("#long-break-timer").timer("resume");
-  $("#pause-pomodoro-long-break-timer").removeClass("is-hidden");
-  $("#resume-pomodoro-long-break-timer").addClass("is-hidden");
+  changeButtonsStateAfterResume("pomodoro-long-break")
 });
 
 $("#destroy-pomodoro-long-break-timer").on("click", function() {
@@ -208,11 +142,7 @@ $("#destroy-pomodoro-long-break-timer").on("click", function() {
 
 function destroyPomodoroLongbreakTimer() {
   $("#long-break-timer").timer("remove");
-  $("#start-pomodoro-long-break-timer").removeClass("is-hidden");
-  $("#pause-pomodoro-long-break-timer").removeClass("is-hidden");
-  $("#pause-pomodoro-long-break-timer").attr("disabled", true);
-  $("#resume-pomodoro-long-break-timer").addClass("is-hidden");
-  $("#destroy-pomodoro-long-break-timer").attr("disabled", true);
+  changeButtonsStateAfterDestroy("pomodoro-long-break");
   $("#long-break-timer").text("<%= min_for_displaying @pomodoro_default_settings[:long_break] %>");
 }
 
@@ -246,5 +176,37 @@ $("#long-break-link").on("click", function() {
   destroyPomodoroShortbreakTimer();
 });
 
+
+function ringSound() {
+  $("#finish-alerm").trigger("play");
+}
+
+function afterSound() {
+  location.reload();
+}
+
+
+function changeButtonsStateAfterStarted(type) {
+  $("#start-" + type + "-timer").addClass("is-hidden");
+  $("#pause-" + type + "-timer").removeClass("is-hidden");
+  $("#destroy-" + type + "-timer").removeClass("is-hidden");
+}
+
+function changeButtonsStateAfterPaused(type) {
+  $("#pause-" + type + "-timer").addClass("is-hidden");
+  $("#resume-" + type + "-timer").removeClass("is-hidden");
+}
+
+function changeButtonsStateAfterResume(type) {
+  $("#pause-" + type + "-timer").removeClass("is-hidden");
+  $("#resume-" + type + "-timer").addClass("is-hidden");
+}
+
+function changeButtonsStateAfterDestroy(type) {
+  $("#start-" + type + "-timer").removeClass("is-hidden");
+  $("#pause-" + type + "-timer").addClass("is-hidden");
+  $("#resume-" + type + "-timer").addClass("is-hidden");
+  $("#destroy-" + type + "-timer").addClass("is-hidden");
+}
 
 </script>
