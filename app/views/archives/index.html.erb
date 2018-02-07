@@ -1,3 +1,23 @@
 <div class="container">
-  <h1>Archives View</h1>  
+  <% if @todays_pomodoros %>
+    <table class="table">
+      <tr>
+        <th>
+          開始時間
+        </th>
+        <th>
+          終了時間
+        </th>
+      </tr>
+      <% @todays_pomodoros.each do |pomodoro| %>
+        <tr>
+          <td>
+            <%= pomodoro.start_at %>
+          </td>
+        </tr>
+      <% end %>
+    </table>
+  <% else %>
+    <h3>本日のポモドーロはありません</h3>
+  <% end %>
 </div>
